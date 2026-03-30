@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BONE-SMASHER</title>
+<Link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div id="loading-msg">SUMMONING HANDS...</div>
+
+<video id="base-video" autoplay muted playsinline></video>
+<canvas id="base-hand-canvas"></canvas>
+
+<div class="screen" id="screen-intro">
+  <div id="intro-overlay"></div>
+  <div id="intro-content">
+    <div id="intro-title">💀 BONE SMASHER 💀</div>
+    <div id="intro-sub">SMASH THE UNDEAD WITH YOUR BARE HANDS</div>
+
+    <div id="intro-buttons">
+      <div class="hand-btn" id="btn-play" data-action="play">
+        <div class="btn-label">▶ PLAY</div>
+        <div class="btn-hint">hover fist to select</div>
+        <div class="btn-progress"></div>
+      </div>
+      <div class="hand-btn" id="btn-settings-toggle" data-action="settings">
+        <div class="btn-label">⚙ SETTINGS</div>
+        <div class="btn-hint">hover fist to open</div>
+        <div class="btn-progress"></div>
+      </div>
+    </div>
+
+    <div id="settings-panel">
+      <div class="setting-row">
+        <span class="setting-label">DIFFICULTY</span>
+        <div class="setting-arrows">
+          <div class="arr-btn" id="diff-down" data-action="diff-down">◀</div>
+          <div class="setting-value" id="diff-val">NORMAL</div>
+          <div class="arr-btn" id="diff-up" data-action="diff-up">▶</div>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">LIVES</span>
+        <div class="setting-arrows">
+          <div class="arr-btn" id="lives-down" data-action="lives-down">◀</div>
+          <div class="setting-value" id="lives-val">5</div>
+          <div class="arr-btn" id="lives-up" data-action="lives-up">▶</div>
+        </div>
+      </div>
+      <div class="setting-row">
+        <span class="setting-label">PUNCH RADIUS</span>
+        <div class="setting-arrows">
+          <div class="arr-btn" id="punch-down" data-action="punch-down">◀</div>
+          <div class="setting-value" id="punch-val">MEDIUM</div>
+          <div class="arr-btn" id="punch-up" data-action="punch-up">▶</div>
+        </div>
+        <div class="setting-row">
+  <span class="setting-label">MUSIC</span>
+  <input type="range" id="music-slider" min="0" max="1" step="0.1" value="0.5">
+</div>
+
+<div class="setting-row">
+  <span class="setting-label">SFX</span>
+  <input type="range" id="sfx-slider" min="0" max="1" step="0.1" value="0.7">
+</div>
+      </div>
+    </div>
+
+    <div id="intro-hint">✊ make a fist and hover over buttons · hold 1.2s to activate</div>
+  </div>
+</div>
+
+<div class="screen" id="screen-game"></div>
+<canvas id="game-canvas"></canvas>
+<div id="hud">
+  <div id="hud-top">
+    <div class="hud-box"><div class="hud-lbl">SCORE</div><div class="hud-v" id="score-v">0</div></div>
+    <div class="hud-box"><div class="hud-lbl">COMBO</div><div id="combo-v">x1</div></div>
+    <div class="hud-box"><div class="hud-lbl">LIVES</div><div id="hp-bar-wrap"></div></div>
+    <div class="hud-box"><div class="hud-lbl">WAVE</div><div class="hud-v" id="wave-v">1</div></div>
+  </div>
+</div>
+<div id="flash-overlay"></div>
+<div id="status-msg"></div>
+<div id="hand-hint">detecting hands…</div>
+
+<div class="screen" id="screen-gameover">
+  <div id="go-title">💀 YOU DIED 💀</div>
+  <div id="go-score"></div>
+  <div id="go-buttons">
+    <div class="hand-btn" id="btn-replay" data-action="replay">
+      <div class="btn-label">↺ PLAY AGAIN</div>
+      <div class="btn-hint">hover fist to replay</div>
+      <div class="btn-progress"></div>
+    </div>
+    <div class="hand-btn" id="btn-menu" data-action="menu">
+      <div class="btn-label">⌂ MENU</div>
+      <div class="btn-hint">hover fist for menu</div>
+      <div class="btn-progress"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/script.js"></script>
+</body>
+</html>
