@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Share+Tech+Mono&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bone:#e8dfc0;--blood:#c0001a;--dark:#07090a;
+  --neon:#00ffaa;--warn:#ffcc00;--dim:rgba(0,0,0,0.55);
+}
+body{background:var(--dark);font-family:'Share Tech Mono',monospace;overflow:hidden;width:100vw;height:100vh}
+
+/*shared layers*/
+#base-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;
+  transform:scaleX(-1);/* mirror so it looks like a mirror */
+  filter:brightness(.72) contrast(1.1) saturate(.5) sepia(.15);z-index:1}
+#base-hand-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+/* NOTE: hand canvas is NOT mirrored — we flip coords in JS to match video mirror */
+
+/* screens  */
+.screen{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center}
+.screen.active{display:flex}
+
+/*INTRO SCREEN */
+#screen-intro{gap:0}
+#intro-overlay{position:absolute;inset:0;background:rgba(7,9,10,.6);z-index:0}
+#intro-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:18px;width:100%}
+#intro-title{font-family:'Creepster',cursive;font-size:clamp(56px,11vw,110px);
+  color:var(--bone);letter-spacing:8px;text-shadow:0 0 40px rgba(232,223,192,.5),4px 4px 0 #000;
+  animation:shake 3s infinite}
+@keyframes shake{0%,100%{transform:rotate(-1deg) scale(1)}50%{transform:rotate(1deg) scale(1.02)}}
+#intro-sub{font-size:13px;color:#888;letter-spacing:4px;margin-top:-8px}
+#intro-buttons{display:flex;gap:28px;margin-top:10px}
+.hand-btn{
+  position:relative;min-width:180px;padding:18px 28px;
+  border:2px solid rgba(232,223,192,.3);border-radius:6px;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(8px);
+  cursor:default;text-align:center;transition:border-color .2s,background .2s;
+  font-family:'Creepster',cursive;
+}
+.hand-btn .btn-label{font-size:26px;color:var(--bone);letter-spacing:3px;line-height:1}
+.hand-btn .btn-hint{font-size:11px;color:#666;margin-top:4px;letter-spacing:1px}
+.hand-btn .btn-progress{
+  position:absolute;bottom:0;left:0;height:4px;width:0%;
+  background:var(--neon);border-radius:0 0 4px 4px;transition:width .05s linear
+}
+.hand-btn.hovering{border-color:var(--neon);background:rgba(0,255,170,.08)}
+.hand-btn.hovering .btn-label{color:var(--neon)}
+.hand-btn.activated{border-color:var(--warn);background:rgba(255,204,0,.15)}
+
+/* settings panel */
+#settings-panel{
+  background:rgba(0,0,0,.75);border:1px solid rgba(232,223,192,.2);
+  border-radius:8px;padding:24px 32px;display:none;flex-direction:column;
+  gap:16px;min-width:340px;backdrop-filter:blur(10px)
+}
+#settings-panel.open{display:flex}
+.setting-row{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.setting-label{font-size:13px;color:#aaa;letter-spacing:2px}
+.setting-value{font-family:'Creepster',cursive;font-size:22px;color:var(--bone);min-width:100px;text-align:center}
+.setting-arrows{display:flex;gap:8px}
+.arr-btn{
+  width:36px;height:36px;border:1px solid rgba(232,223,192,.25);
+  border-radius:4px;background:rgba(255,255,255,.05);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--bone);cursor:default;transition:all .15s
+}
+.arr-btn.hovering{border-color:var(--neon);background:rgba(0,255,170,.15);color:var(--neon)}
+
+#intro-hint{font-size:12px;color:#555;letter-spacing:2px;text-align:center;margin-top:4px}
+
+/* GAME SCREEN*/
+#screen-game{z-index:5;pointer-events:none}
+#game-canvas{position:fixed;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+
+/* HUD */
+#hud{position:fixed;inset:0;z-index:6;pointer-events:none;padding:16px 20px;display:flex;flex-direction:column;justify-content:space-between}
+#hud-top{display:flex;justify-content:space-between;align-items:flex-start}
+.hud-box{background:var(--dim);border:1px solid rgba(232,223,192,.18);
+  padding:8px 16px;border-radius:4px;backdrop-filter:blur(6px)}
+.hud-lbl{font-size:10px;color:#666;letter-spacing:3px;margin-bottom:1px}
+.hud-v{font-family:'Creepster',cursive;font-size:38px;line-height:1;color:var(--bone)}
+#score-v{color:var(--warn);text-shadow:0 0 12px var(--warn)}
+#combo-v{font-family:'Creepster',cursive;font-size:48px;line-height:1;color:var(--blood);text-shadow:0 0 18px var(--blood);transition:transform .1s}
+#combo-v.pop{transform:scale(1.35)}
+.hp-pip{width:16px;height:16px;margin-right:3px;border:1px solid rgba(232,223,192,.3);
+  background:var(--bone);border-radius:2px;display:inline-block;transition:background .2s}
+.hp-pip.lost{background:#1a1a1a;box-shadow:none}
+
+#flash-overlay{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:0;transition:opacity .07s}
+.punch-ring{position:fixed;border-radius:50%;pointer-events:none;z-index:7;
+  border:3px solid #ffcc00;transform:translate(-50%,-50%) scale(0);
+  animation:pring .38s ease-out forwards}
+@keyframes pring{0%{opacity:.9;transform:translate(-50%,-50%) scale(0)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
+
+#status-msg{position:fixed;top:44%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Creepster',cursive;font-size:44px;letter-spacing:5px;
+  pointer-events:none;opacity:0;z-index:8;text-shadow:0 0 22px currentColor;transition:opacity .3s}
+#hand-hint{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  font-size:12px;letter-spacing:2px;color:#555;
+  background:rgba(0,0,0,.55);padding:5px 16px;border-radius:3px;
+  border:1px solid rgba(255,255,255,.06);z-index:8}
+
+/* GAME OVER SCREEN */
+#screen-gameover{gap:22px;background:rgba(0,0,0,.88);z-index:20}
+#go-title{font-family:'Creepster',cursive;font-size:86px;color:var(--bone);
+  text-shadow:0 0 40px rgba(232,223,192,.5);letter-spacing:8px}
+#go-score{font-size:17px;color:var(--warn);letter-spacing:2px;text-align:center}
+#go-buttons{display:flex;gap:28px;margin-top:10px}
+
+/* misc */
+#loading-msg{position:fixed;inset:0;z-index:50;background:var(--dark);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Creepster',cursive;font-size:32px;color:var(--bone);letter-spacing:4px}
