@@ -62,7 +62,7 @@ Smash incoming skeletons before they reach the center. Survive waves and build c
 
 ## 👤 Author
 
-Your Name
+SAHIL PAWAR
 
 ---
 
